@@ -11,8 +11,15 @@ function PlantPage() {
     fetch("http://localhost:6001/plants")
       .then((res) => res.json())
       .then((data) =>
-        setPlants(data.map((plant) => ({ ...plant, inStock: true })))
-      );
+        setPlants(
+          data.map((plant) => ({
+            ...plant,
+            inStock: true,
+            id: plant.id || Math.random().toString(36).substr(2, 9),
+          }))
+        )
+      )
+      .catch((error) => console.error("Error fetching plants:", error));
   }, []);
 
   const handleAddPlant = (newPlant) => {
@@ -29,7 +36,17 @@ function PlantPage() {
       body: JSON.stringify(plantToSend),
     })
       .then((res) => res.json())
-      .then((data) => setPlants([...plants, { ...data, inStock: true }]));
+      .then((data) =>
+        setPlants([
+          ...plants,
+          {
+            ...data,
+            inStock: true,
+            id: data.id || Math.random().toString(36).substr(2, 9),
+          },
+        ])
+      )
+      .catch((error) => console.error("Error adding plant:", error));
   };
 
   const handleToggleStock = (id) => {
